@@ -7,7 +7,7 @@ const cors = require("cors")
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGO_URI 
-const ORIGENS_PERMITIDAS = "http://localhost:5500,http://127.0.0.1:5500"
+const ORIGENS_PERMITIDAS = process.env.FRONTEND || "http://localhost:5500,http://127.0.0.1:5500"
     .split(",")
     .map((origem) => origem.trim());
 
