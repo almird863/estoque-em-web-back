@@ -11,9 +11,32 @@ const Usuario = require("./models/Usuario");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/estoque";
-const ORIGENS_PERMITIDAS = (process.env.FRONTEND_URL || "http://localhost:5500,http://127.0.0.1:5500")
+const producao = process.env.NODE_ENV === "production";
+
+// Aceita "https://site.com/caminho/" e usa só a origem ("https://site.com"), que é o que o CORS compara
+function normalizarOrigem(origem) {
+    try {
+        return new URL(origem).origin;
+    } catch {
+        return origem;
+    }
+}
+
+// O site publicado está sempre liberado. Os endereços de teste local só valem fora de produção.
+const ORIGENS_PADRAO = [
+    "https://almird863.github.io",
+    ...(producao ? [] : ["http://localhost:5500", "http://127.0.0.1:5500"]),
+];
+
+// FRONTEND_URL (opcional) acrescenta outras origens, separadas por vírgula
+const ORIGENS_EXTRAS = (process.env.FRONTEND_URL || "")
     .split(",")
-    .map((origem) => origem.trim());
+    .map((origem) => origem.trim())
+    .filter(Boolean)
+    .map(normalizarOrigem);
+
+const ORIGENS_PERMITIDAS = [...new Set([...ORIGENS_PADRAO, ...ORIGENS_EXTRAS])];
+console.log("Origens permitidas (CORS):", ORIGENS_PERMITIDAS.join(", "));
 
 if (!process.env.JWT_SECRET || !process.env.GOOGLE_CLIENT_ID) {
     console.error("Defina JWT_SECRET e GOOGLE_CLIENT_ID no arquivo .env (veja o .env.example).");
