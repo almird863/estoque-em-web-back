@@ -11,4 +11,4 @@ const usuarioSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Usuario", usuarioSchema);
+module.exports = mongoose.model("Usuario", usuarioSchema, "webestoque-usuarios");

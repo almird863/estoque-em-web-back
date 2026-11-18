@@ -18,4 +18,4 @@ const produtoSchema = new mongoose.Schema(
 // (dois usuários podem ter, cada um, o seu produto "001")
 produtoSchema.index({ usuario: 1, codigo: 1 }, { unique: true });
 
-module.exports = mongoose.model("Produto", produtoSchema);
+module.exports = mongoose.model("Produto", produtoSchema, "webestoque-produtos");
